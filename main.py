@@ -14,6 +14,11 @@ def addition(a: int = 0, b: int = 0):
         "result a+b=": a + b
     }
 
+@app.get("/soustraction")
+def soustraction(a: int = 0, b: int = 0):
+    return {
+        "result a-b=": a - b
+    }
 
 @app.get("/greeting")
 def greeting(name: str = "World"):
