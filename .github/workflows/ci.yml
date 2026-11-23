@@ -7,7 +7,29 @@ on:
     branches: [ main ]
 
 jobs:
+  code_quality:
+    name: pylint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn pytest httpx pylint
+
+      - name: Run Pylint code quality analysis
+        run: pylint main.py test_main.py
+
   run-test:
+    needs: code_quality
     runs-on: ubuntu-latest
 
     steps:
@@ -35,6 +57,7 @@ jobs:
           path: report.xml
 
   calculate-coverage:
+    needs: code_quality
     runs-on: ubuntu-latest
 
     steps:
