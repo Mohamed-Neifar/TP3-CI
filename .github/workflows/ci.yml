@@ -33,3 +33,27 @@ jobs:
         with:
           name: junit-test-report
           path: report.xml
+
+  calculate-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn pytest httpx pytest-cov
+
+      - name: Calculate code coverage and display in GitHub Summary
+        run: |
+          echo "### 📊 Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          pytest -v --cov=. --cov-report=term-missing | tee -a $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
